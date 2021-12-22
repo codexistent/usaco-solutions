@@ -8,7 +8,6 @@ public class P2 {
         PrintWriter out = new PrintWriter(System.out);
 
         int n = Integer.parseInt(in.nextToken());
-        int first = 0;
         int ans = 0;
         int[] original = new int[n];
         int[] targetChng = new int[n];
