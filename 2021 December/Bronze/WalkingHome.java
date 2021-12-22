@@ -1,6 +1,6 @@
 import java.io.*;
 import java.util.*;
-
+// Saturday, December 18th || 10 / 10 test cases
 public class P3 {
     public static enum Dir{PLUSA, PLUSB};
     public static int n;
