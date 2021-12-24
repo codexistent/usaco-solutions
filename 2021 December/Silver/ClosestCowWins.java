@@ -1,6 +1,6 @@
 import java.io.*;
 import java.util.*;
-// Mon, Dec 20, 2021 || 21 / 21 test cases
+// Mon, Dec 20th, 2021 || 21 / 21 test cases
 
 public class P1 {
     public static void main(String args[]) throws IOException {
