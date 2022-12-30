@@ -1,2 +1,2 @@
 # usaco-solutions
-The landfill of my USACO in-contest solutions. 2021 - Present
+The landfill of some of my USACO solutions. 2021 - Present
