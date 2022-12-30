@@ -16,7 +16,7 @@ public class P3 {
             n = Integer.parseInt(in.nextToken());
             int k = Integer.parseInt(in.nextToken());
             boolean[][] bale = new boolean[n][n];
-
+            
             for(int i1 = 0; i1 < n; i1++){ in = new StringTokenizer(br.readLine());
                 String s = in.nextToken();
                 for(int j1 = 0; j1 < n; j1++){
