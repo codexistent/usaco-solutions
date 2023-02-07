@@ -1,4 +1,4 @@
-#include <iostream>
+#include <fstream>
 #include <algorithm>
 #include <set>
 using namespace std;
@@ -26,16 +26,18 @@ bool cmpB(int a, int b) {
 };
 
 int main(){
-    cin >> N >> M;
+    ifstream fin("snowboots.in");
+    ofstream fout("snowboots.out");
+    fin >> N >> M;
     for(int i = 1; i <= N; i++) { // get tiles
         t[i] = i;
-        cin >> T[i].d;
+        fin >> T[i].d;
         T[i].l = i - 1;
         T[i].r = i + 1;
     }
     for(int i = 1; i <= M; i++) { // get boots
         B[i].id = b[i] = i;
-        cin >> B[i].d >> B[i].s;
+        fin >> B[i].d >> B[i].s;
     }
     T[1].l = 1; T[N].r = N;
     sort(t + 1, t + 1 + N, cmpT);
@@ -57,5 +59,5 @@ int main(){
         V[b[i]] = (S <= B[b[i]].s);
     }
 
-    for(int i = 1; i <= M; i++) cout << V[i] << endl;
+    for(int i = 1; i <= M; i++) fout << V[i] << endl;
 }
