@@ -10,15 +10,15 @@ public:
     vector<int> SA, R, LCP, EC;
  
     suffix_array(string s){
-        S = s + '$';
+        S = s;
         N = S.length();
         compute_sa();
-        N--;
+        compute_ranks();
     }
  
     void compute_sa(){
         helper h;
-        string s = S;
+        string s = S + '$';
         int L, k = 0;
         vector<int> ec(N + 1);
         // 1 - concatenate characters until a power of 2
@@ -35,8 +35,17 @@ public:
         // finishing touches
         swap(EC, ec);
     }
-    void compute_lcp(){
-        // TODO
+    void compute_ranks(){
+        R.resize(N);
+        for(int i = 0; i < N; i++) R[SA[i]] = i;
+    }
+    void compute_lcp(){ // Kasai's algorithm
+        LCP.resize(N); // LCP[i] = longest common prefix of suffixes at indexes i and i+1
+        for(int i = 0, lcp = 0; i < N; i++, lcp = ((R[i] == N - 1) ? 0 : max(0, lcp - 1))) if(R[i] != N - 1){
+            int j = SA[R[i] + 1];
+            while(i + lcp < N && j + lcp < N && S[i + lcp] == S[j + lcp]) lcp++;
+            LCP[R[i]] = lcp;
+        }
     }
 private:
     class helper {
