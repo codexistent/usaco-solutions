@@ -26,7 +26,14 @@ public:
         for(int i = s.length() + 1; i <= L; i++) s += S[i - S.length() - 2];
  
         // 2 - i = 0 - make initial equivalence classes
-        h.initial_ec(ec, s); 
+        int c[256] = {0}, r[N];
+        for(int i = 0; i < N; i++) c[s[i]]++; // compute # of character i
+        for(int i = 1; i < 256; i++) c[i] += c[i - 1]; // c[i] = # of characters 1...i in S
+            
+        for(int i = 0; i < N; i++) r[--c[s[i]]] = i; // r sorts all strings lexiographically & then by index
+ 
+        ec[r[0]] = 0; // build equicalence classes
+        for(int i = 1; i < N; i++) ec[r[i]] = ec[r[i - 1]] + (s[r[i]] != s[r[i - 1]]);
  
         // 3 - i = 1...k - duplicate suffix lengths until final suffix array
         EC.resize(N);
@@ -66,16 +73,6 @@ private:
             }
         };
     public:
-        void initial_ec(vector<int>& ec, string s) { // build initial equivalence classes - counting sort O(n + k)
-            int N = s.length(), c[256] = {0}, r[N];
-            for(int i = 0; i < N; i++) c[s[i]]++; // compute # of character i
-            for(int i = 1; i < 256; i++) c[i] += c[i - 1]; // c[i] = # of characters 1...i in S
-            
-            for(int i = 0; i < N; i++) r[--c[s[i]]] = i; // r sorts all strings lexiographically & then by index
- 
-            ec[r[0]] = 0; // build equicalence classes
-            for(int i = 1; i < N; i++) ec[r[i]] = ec[r[i - 1]] + (s[r[i]] != s[r[i - 1]]);
-        }
         void expand_sa(vector<int>& ec, vector<int>& EC, vector<int>& SA, int L, int N2){ // expand suffix lengths by two
             // update suffix array
             for(int i = 0; i < N2; i++) SA[i] = i;            
