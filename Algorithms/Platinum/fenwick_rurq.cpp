@@ -19,18 +19,18 @@ struct RangeFenwick {
         add(1, l, x * (l - 1)), add(1, r + 1, -x * r);
     }
 
-    int sum_helper(int t, int i){
+    int pfx_helper(int t, int i){
         int r = 0;
         for(; i > 0; i -= i & -i) r += bit[t][i];
 
         return r;
     }
 
-    int sum(int i){
-        return sum_helper(0, i)*i - sum_helper(1, i);
+    int pfx(int i){
+        return pfx_helper(0, i)*i - pfx_helper(1, i);
     }
 };
 
-int main() {
-  
+int main(){
+    
 }
