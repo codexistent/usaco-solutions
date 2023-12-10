@@ -1,48 +1,49 @@
 #include <bits/stdc++.h>
 using namespace std;
-#define FOR(i, a, b) for(int i = a; i <= b; i++)
+#define FOR(i, a, b) for(ll i = a; i <= b; i++)
+#define ll long long
 
-struct SegmentTree{
+struct SumSegmentTree{
 public:
-    vector<int> tree, lazy;
-    int n;
+    vector<ll> tree, lazy;
+    ll n;
 
-    SegmentTree(int n) {
+    SumSegmentTree(ll n) {
         this->n = n;
         tree.assign(4 * this->n + 1, 0);
         lazy.assign(4 * this->n + 1, 0);
     }
-    SegmentTree(const vector<int> &a) : SegmentTree(a.size()){
+    SumSegmentTree(const vector<ll> &a) : SumSegmentTree(a.size()){
         build(a, 1, 1, n);
     }
     
-    void update(int i, int x){ // point update
+    void update(ll i, ll x){ // poll update
         update_range(1, 1, n, make_tuple(i, i, x));
     }
-    void update(int i, int j, int x){
+    void update(ll i, ll j, ll x){
         update_range(1, 1, n, make_tuple(i, j, x));
     }
-    int query(int i){
+    ll query(ll i){
         return query_range(1, 1, n, make_pair(i, i));
     }
-    int query(int i, int j){
+    ll query(ll i, ll j){
         return query_range(1, 1, n, make_pair(i, j));
     }
 
 private:
-    void build(const vector<int> &a, int i, int l, int r){
+    void build(const vector<ll> &a, ll i, ll l, ll r){
         if(l == r) {
             tree[i] = a[l - 1];
             return;
         }
         
-        int m = (l + r) / 2;
+        ll m = (l + r) / 2;
         build(a, 2*i, l, m);
         build(a, 2*i + 1, m + 1, r);
 
         tree[i] = tree[2*i] + tree[2*i + 1];
     }
-    void update_range(int i, int l, int r, tuple<int, int, int> upd){
+    void update_range(ll i, ll l, ll r, tuple<ll, ll, ll> upd){
         if(lazy[i] != 0){
             tree[i] += (r - l + 1) * lazy[i];
             if(l != r){
@@ -62,13 +63,13 @@ private:
             return;
         }
 
-        int m = (l + r) / 2;
+        ll m = (l + r) / 2;
         update_range(i * 2, l, m, upd);
         update_range(i * 2 + 1, m + 1, r, upd);
 
         tree[i] = tree[i * 2] + tree[i * 2 + 1];
     }
-    int query_range(int i, int l, int r, pair<int, int> qry){
+    ll query_range(ll i, ll l, ll r, pair<ll, ll> qry){
         if(l > r || qry.second < l || r < qry.first) return 0;
 
         if(lazy[i] != 0){
@@ -82,11 +83,11 @@ private:
 
         if(qry.first <= l && r <= qry.second) return tree[i];
 
-        int m = (l + r) / 2;
+        ll m = (l + r) / 2;
         return query_range(i * 2, l, m, qry) + query_range(i * 2 + 1, m + 1, r, qry);
     }
 };
 
-int main(){
-
+int main() {
+    
 }
