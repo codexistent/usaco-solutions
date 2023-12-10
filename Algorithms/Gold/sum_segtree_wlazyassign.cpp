@@ -59,7 +59,6 @@ private:
         tree[i] = tree[2*i] + tree[2*i + 1];
     }
     void update_range(ll i, ll l, ll r, tuple<ll, ll, ll> upd){
-        cout << " " << i << " " << l << "-" << r << " ~~ " << get<0>(upd) << ", " << get<1>(upd) << ", " << get<2>(upd) << endl;
         if(l > r) return;
 
         if(get<0>(upd) == l && get<1>(upd) == r){
