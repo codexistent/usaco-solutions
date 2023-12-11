@@ -32,6 +32,8 @@ public:
 
 private:
     void build(const vector<ll> &a, ll i, ll l, ll r){
+        if(l > r) return;
+        
         if(l == r) {
             tree[i] = a[l - 1];
             return;
