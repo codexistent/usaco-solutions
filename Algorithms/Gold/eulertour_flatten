@@ -1,0 +1,21 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define MAXN 200005
+
+pair<int, int> R[MAXN];
+vector<int> E[MAXN];
+
+int flatten_dfs(int p, int i, int t){
+    R[i].first = t;
+
+    for(int i2 : E[i]) if(i2 != p){
+        t = flatten_dfs(i, i2, t + 1);
+    }
+
+    R[i].second = t;
+    return t;
+}
+
+int main(){
+
+}
