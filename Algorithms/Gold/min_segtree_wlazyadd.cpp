@@ -3,7 +3,7 @@ using namespace std;
 #define FOR(i, a, b) for(ll i = a; i <= b; i++)
 #define ll long long
 
-struct MinSegmentTree{
+struct MinSegmentTree{ // ONE-BASED INDEXED(WILL GIVE ERRORS IF GET RANGE BELOW 1)
 public:
     vector<ll> tree, lazy;
     ll n;
