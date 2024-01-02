@@ -70,8 +70,8 @@ private:
             push(i, l, r);
             ll m = (l + r) / 2;
             
-            if(get<0>(upd) < min(get<1>(upd), m)) update_range(i * 2, l, m, make_tuple(get<0>(upd), min(get<1>(upd), m), get<2>(upd)));
-            if(max(get<0>(upd), m + 1) < get<1>(upd)) update_range(i * 2 + 1, m + 1, r, make_tuple(max(get<0>(upd), m + 1), get<1>(upd), get<2>(upd)));
+            if(get<0>(upd) <= min(get<1>(upd), m)) update_range(i * 2, l, m, make_tuple(get<0>(upd), min(get<1>(upd), m), get<2>(upd)));
+            if(max(get<0>(upd), m + 1) <= get<1>(upd)) update_range(i * 2 + 1, m + 1, r, make_tuple(max(get<0>(upd), m + 1), get<1>(upd), get<2>(upd)));
 
             tree[i] = tree[i * 2] + tree[i * 2 + 1];
         }
