@@ -20,15 +20,19 @@ public:
     }
     
     void update(ll i, ll x){ // poll update
+        if(i == 0) return;
         update_range(1, 1, n, make_tuple(i, i, x));
     }
     void update(ll i, ll j, ll x){
+        if(i == j && i == 0) return; else if(i == 0) i++;
         update_range(1, 1, n, make_tuple(i, j, x));
     }
     ll query(ll i){
+        if(i == 0) return 0;
         return query_range(1, 1, n, make_pair(i, i));
     }
     ll query(ll i, ll j){
+        if(i == j && i == 0) return 0; else if(i == 0) i++;
         return query_range(1, 1, n, make_pair(i, j));
     }
 
@@ -61,6 +65,8 @@ private:
     }
     void update_range(ll i, ll l, ll r, tuple<ll, ll, ll> upd){
         if(l > r) return;
+
+        cout << l << " " << r << " ~ " << get<0>(upd) << " " << get<1>(upd) << endl;
 
         if(get<0>(upd) == l && get<1>(upd) == r){
             tree[i] = (r - l + 1) * get<2>(upd);
