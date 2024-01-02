@@ -65,9 +65,7 @@ private:
     }
     void update_range(ll i, ll l, ll r, tuple<ll, ll, ll> upd){
         if(l > r) return;
-
-        cout << l << " " << r << " ~ " << get<0>(upd) << " " << get<1>(upd) << endl;
-
+        
         if(get<0>(upd) == l && get<1>(upd) == r){
             tree[i] = (r - l + 1) * get<2>(upd);
             lazy[i] = true;
