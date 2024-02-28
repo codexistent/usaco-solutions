@@ -1,0 +1,138 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define FOR(i, a, b) for(int i = a; i <= b; i++)
+#define maxn 200005
+#define INF 1000000000000000000LL
+
+int N, L;
+int x[maxn], y[maxn], xid[maxn], lis[maxn];
+long long dp[maxn];
+bool cmpx(int a, int b) { return x[a] < x[b]; }
+vector<int> levels[maxn], level;
+
+void computeLIS () {
+    levels[0].push_back(xid[0]);
+    lis[xid[0]] = 0;
+    int mx = 0;
+    FOR(i, 1, N - 1){
+        int cur = xid[i];
+        int lo = -1, hi = mx;
+        while(lo != hi){
+            int md = (lo + hi + 1) / 2;
+            if(y[levels[md].back()] < y[cur]) lo = md;
+            else hi = md - 1;
+        }
+        levels[lo + 1].push_back(cur);
+        mx = max(mx, lo + 1);
+        lis[cur] = lo + 1;
+    }
+}
+
+int findFirst(int l, int i){
+    int lo = 0, hi = levels[l].size() - 1;
+    while(lo != hi){
+        int md = (lo + hi) / 2;
+        if(x[levels[l][md]] > x[i]) hi = md;
+        else lo = md + 1;
+    }
+    if(x[levels[l][lo]] > x[i] && y[levels[l][lo]] > y[i]) return lo;
+    return -1;
+}
+
+int findLast(int l, int i){
+    int lo = 0, hi = levels[l].size() - 1;
+    while(lo != hi){
+        int md = (lo + hi + 1) / 2;
+        if(y[levels[l][md]] > y[i]) lo = md;
+        else hi = md - 1;
+    }
+    if(x[levels[l][lo]] > x[i] && y[levels[l][lo]] > y[i]) return lo;
+    return -1;
+}
+
+long long cost(int i, int j){
+    return dp[i] + x[i] * ((long long)y[i]) - x[i] * ((long long)y[j]) - y[i]*((long long)x[j]) + x[j]*((long long)y[j]);
+}
+
+int findLocOvertake(int l, int i, int j){
+    int lo = 0, hi = levels[l].size();
+    while(lo != hi){
+        int md = (lo + hi) / 2;
+        if(cost(i, levels[l][md]) < cost(j, levels[l][md])) hi = md;
+        else lo = md + 1;
+    }
+    return lo;
+}
+
+int firstDom[maxn], lastDom[maxn], overtake[maxn], que[maxn];
+
+void solveStartingRegion(int l, int iStart, int iEnd, int qStart, int qEnd){
+    int len = 0, i = iStart;
+    FOR(j, qStart, qEnd){
+        int q = levels[l + 1][j];
+        while(i <= iEnd && firstDom[i] <= j){
+            while(len >= 2 && overtake[len - 2] <= findLocOvertake(l + 1, que[len - 1], level[i])) len--;
+            que[len] = level[i];
+            if(len >= 1) overtake[len - 1] = findLocOvertake(l + 1, que[len - 1], level[i]);
+            len++, i++;
+        }
+        while(len >= 2 && overtake[len - 2] <= j) len--;
+        dp[q] = min(dp[q], cost(que[len - 1], q));
+    }
+}
+
+void solveEndingRegion(int l, int iStart, int iEnd, int qStart, int qEnd){
+    int len = 0, i = iEnd;
+    for(int j = qEnd; j >= qStart; j--){
+        int q = levels[l + 1][j];
+        while(i >= iStart && lastDom[i] >= j){
+            while(len >= 2 && overtake[len - 2] >= findLocOvertake(l + 1, level[i], que[len - 1])) len--;
+            que[len] = level[i];
+            if(len >= 1) overtake[len - 1] = findLocOvertake(l + 1, level[i], que[len - 1]);
+            len++, i--;
+        }
+        while(len >= 2  && overtake[len - 2] > j) len--;
+        dp[q] = min(dp[q], cost(que[len - 1], q));
+    }
+}
+
+int main(){
+    ifstream cin("mowing.in");
+    ofstream cout("mowing.out");
+
+    cin >> N >> L;
+    FOR(i, 0, N - 1) cin >> x[i] >> y[i];
+    x[N] = y[N] = L; N++;
+
+    FOR(i, 0, N - 1) dp[i] = INF, xid[i] = i;
+    sort(xid, xid + N, cmpx);
+
+    computeLIS();
+    FOR(i, 0, levels[0].size() - 1){
+        int cur = levels[0][i];
+        dp[cur] = x[cur]*(long long)y[cur];
+    }
+    for(int l = 0; levels[l+1].size() > 0; l++){
+        level.clear();
+        FOR(i, 0, levels[l].size() - 1){
+            int cur = levels[l][i];
+            int fd = findFirst(l + 1, cur);
+            int ld = findLast(l + 1, cur);
+            if(fd != -1){
+                firstDom[level.size()] = fd;
+                lastDom[level.size()] = ld;
+                level.push_back(levels[l][i]);
+            }
+        }
+        for(int i = 0; i < level.size();){
+            int iEnd = i;
+            while(iEnd + 1 < level.size() && firstDom[iEnd + 1] <= lastDom[i]) iEnd++;
+            solveStartingRegion(l, i, iEnd, firstDom[i], lastDom[i]);
+            if(lastDom[iEnd] >= lastDom[i] + 1){
+                solveEndingRegion(l, i + 1, iEnd, lastDom[i] + 1, lastDom[iEnd]);
+            }
+            i = iEnd + 1;
+        }
+    }
+    cout << dp[N - 1] << endl;
+}
