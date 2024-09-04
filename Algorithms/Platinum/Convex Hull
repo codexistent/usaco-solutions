@@ -1,0 +1,77 @@
+// c++ Convex Hull implementation
+// this is also the solution for SPOJ GARDENHU : https://www.spoj.com/problems/GARDENHU/en/
+
+#include <bits/stdc++.h>
+using namespace std;
+#define db double
+#define ll long long
+#define FOR(i, a, b) for(ll i = a; i <= b; i++)
+#define f first
+#define s second
+
+ll n;
+db mns = INFINITY, r = 0;
+vector<pair<db, db>> tr;
+pair<db, db> st;
+
+int orientation(pair<db, db> a, pair<db, db> b, pair<db, db> c){
+    db cx = (a.f - b.f)*(c.s - b.s) - (c.f - b.f)*(a.s - b.s);
+    if(cx < 0) return -1; // ccw
+    if(cx > 0) return 1; // cw
+    return 0;
+}
+
+db distSq(pair<db, db> a, pair<db, db> b){
+    return (a.f - b.f) * (a.f - b.f) + (a.s - b.s) * (a.s - b.s);
+}
+
+bool comp_tr(const pair<db, db>& a, const pair<db, db>& b){
+    int o = orientation(st, a, b);
+    if(o == 0){
+        return distSq(st, a) < distSq(st, b);
+    }
+    return o == 1;
+}
+
+int main(){
+    cin >> n;
+    FOR(i, 1, n){
+        pair<db, db> p;
+        cin >> p.f >> p.s;
+        if(p.s <= mns) {
+            mns = p.s;
+            st = p;
+        }
+        tr.push_back(p);
+    }
+    sort(begin(tr), end(tr), comp_tr);
+
+    stack<pair<db, db>> ch;
+    FOR(i, 0, n - 1){
+        ch.push(tr[i]);
+        while(ch.size() >= 4){
+            pair<db, db> l3 = ch.top(); ch.pop();
+            pair<db, db> l2 = ch.top(); ch.pop();
+            pair<db, db> l1 = ch.top(); ch.pop();
+
+            ch.push(l1);
+            if(orientation(l1, l2, l3) != 1) {
+                ch.push(l3);
+            }else{
+                ch.push(l2);
+                ch.push(l3);
+                break;
+            }
+        }
+    }
+
+    pair<db, db> prv = {-1, -1}, fst = ch.top();
+    while(ch.size()){
+        if(prv.f != -1) r += sqrt(distSq(prv, ch.top()));
+        prv = ch.top();
+        ch.pop();
+    }
+    r += sqrt(distSq(fst, prv));
+
+    cout << fixed << (ll)round(r) << endl;
+}
